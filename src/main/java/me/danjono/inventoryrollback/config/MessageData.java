@@ -133,6 +133,7 @@ public class MessageData {
     private static String discordTitleExperienceRestored;
     private static String discordTitlePlayerDeath;
     private static String discordTitleForceBackup;
+    private static String discordTitleItemClickedInRestore;
 
     private static String discordDescBackupCreated;
     private static String discordDescInventoryRestored;
@@ -142,6 +143,7 @@ public class MessageData {
     private static String discordDescExperienceRestored;
     private static String discordDescPlayerDeath;
     private static String discordDescForceBackup;
+    private static String discordDescItemClickedInRestore;
 
     private static String discordMsgBackupCreated;
     private static String discordMsgInventoryRestored;
@@ -151,6 +153,7 @@ public class MessageData {
     private static String discordMsgExperienceRestored;
     private static String discordMsgPlayerDeath;
     private static String discordMsgForceBackup;
+    private static String discordMsgItemClickedInRestore;
 
     private static String discordErrorWebhookFailed;
     private static String discordErrorInvalidWebhook;
@@ -244,6 +247,7 @@ public class MessageData {
         setDiscordDescExperienceRestored((String) getDefaultValue("discord.descriptions.experience-restored", "Player **%PLAYER%** experience restored by **%ADMIN%**\n**Level:** %LEVEL%\n**From backup:** %TIME%"));
         setDiscordDescPlayerDeath((String) getDefaultValue("discord.descriptions.player-death", "Player **%PLAYER%** died\n**Location:** %WORLD% (%X%, %Y%, %Z%)\n**Cause:** %CAUSE%\n**Time:** %TIME%"));
         setDiscordDescForceBackup((String) getDefaultValue("discord.descriptions.force-backup", "Force backup created for **%PLAYER%** by **%ADMIN%**\n**Time:** %TIME%"));
+        setDiscordDescItemClickedInRestore((String) getDefaultValue("discord.descriptions.item-clicked-in-restore", "Admin **%ADMIN%** clicked **%ITEM%** in **%MENU%** restore menu for **%PLAYER%**\n**Time:** %TIME%"));
 
         setDiscordMsgBackupCreated((String) getDefaultValue("discord.messages.backup-created", "📦 Backup created for %PLAYER% (%TYPE%) at %TIME%"));
         setDiscordMsgInventoryRestored((String) getDefaultValue("discord.messages.inventory-restored", "🎒 %PLAYER% inventory restored by %ADMIN% from backup %TIME%"));
@@ -253,6 +257,7 @@ public class MessageData {
         setDiscordMsgExperienceRestored((String) getDefaultValue("discord.messages.experience-restored", "✨ %PLAYER% experience restored by %ADMIN% (Level: %LEVEL%) from backup %TIME%"));
         setDiscordMsgPlayerDeath((String) getDefaultValue("discord.messages.player-death", "💀 %PLAYER% died at %WORLD% (%X%, %Y%, %Z%) - %CAUSE% at %TIME%"));
         setDiscordMsgForceBackup((String) getDefaultValue("discord.messages.force-backup", "🔧 Force backup created for %PLAYER% by %ADMIN% at %TIME%"));
+        setDiscordMsgItemClickedInRestore((String) getDefaultValue("discord.messages.item-clicked-in-restore", "👆 %ADMIN% clicked %ITEM% in %MENU% restore menu for %PLAYER% at %TIME%"));
 
         setDiscordErrorWebhookFailed(convertColorCodes((String) getDefaultValue("discord.errors.webhook-failed", "&cFailed to send Discord webhook message")));
         setDiscordErrorInvalidWebhook(convertColorCodes((String) getDefaultValue("discord.errors.invalid-webhook", "&cInvalid Discord webhook URL configured")));
@@ -526,6 +531,10 @@ public class MessageData {
         discordDescForceBackup = message;
     }
 
+    public static void setDiscordDescItemClickedInRestore(String message) {
+        discordDescItemClickedInRestore = message;
+    }
+
     public static void setDiscordMsgBackupCreated(String message) {
         discordMsgBackupCreated = message;
     }
@@ -556,6 +565,10 @@ public class MessageData {
 
     public static void setDiscordMsgForceBackup(String message) {
         discordMsgForceBackup = message;
+    }
+
+    public static void setDiscordMsgItemClickedInRestore(String message) {
+        discordMsgItemClickedInRestore = message;
     }
 
     public static void setDiscordErrorWebhookFailed(String message) {
@@ -805,6 +818,10 @@ public class MessageData {
         return discordTitleForceBackup;
     }
 
+    public static String getDiscordTitleItemClickedInRestore() {
+        return discordTitleItemClickedInRestore;
+    }
+
     public static String getDiscordDescBackupCreated() {
         return discordDescBackupCreated;
     }
@@ -837,6 +854,10 @@ public class MessageData {
         return discordDescForceBackup;
     }
 
+    public static String getDiscordDescItemClickedInRestore() {
+        return discordDescItemClickedInRestore;
+    }
+
     public static String getDiscordMsgBackupCreated() {
         return discordMsgBackupCreated;
     }
@@ -867,6 +888,10 @@ public class MessageData {
 
     public static String getDiscordMsgForceBackup() {
         return discordMsgForceBackup;
+    }
+
+    public static String getDiscordMsgItemClickedInRestore() {
+        return discordMsgItemClickedInRestore;
     }
 
     public static String getDiscordErrorWebhookFailed() {

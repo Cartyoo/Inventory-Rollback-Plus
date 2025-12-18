@@ -29,6 +29,7 @@ discord:
     experience-restored: '✨ Experience Restored'
     player-death: '💀 Player Death'
     force-backup: '🔧 Force Backup'
+    item-clicked-in-restore: '👆 Item Clicked in Restore Menu'
 
   # Event descriptions for Discord embeds
   descriptions:
@@ -40,6 +41,7 @@ discord:
     experience-restored: 'Player **%PLAYER%** experience restored by **%ADMIN%**\n**Level:** %LEVEL%\n**From backup:** %TIME%'
     player-death: 'Player **%PLAYER%** died\n**Location:** %WORLD% (%X%, %Y%, %Z%)\n**Cause:** %CAUSE%\n**Time:** %TIME%'
     force-backup: 'Force backup created for **%PLAYER%** by **%ADMIN%**\n**Time:** %TIME%'
+    item-clicked-in-restore: '**%ADMIN%** clicked an item in restore menu\n**Player''s inventory:** %PLAYER%\n**Item clicked:** %ITEM%\n**Menu:** %MENU%\n**Time:** %TIME%'
 
   # Simple text messages (when embeds are disabled)
   messages:
@@ -51,6 +53,7 @@ discord:
     experience-restored: '✨ %PLAYER% experience restored by %ADMIN% (Level: %LEVEL%) from backup %TIME%'
     player-death: '💀 %PLAYER% died at %WORLD% (%X%, %Y%, %Z%) - %CAUSE% at %TIME%'
     force-backup: '🔧 Force backup created for %PLAYER% by %ADMIN% at %TIME%'
+    item-clicked-in-restore: '👆 %ADMIN% clicked %ITEM% in %MENU% restore menu for %PLAYER% at %TIME%'
 
   # Error messages
   errors:

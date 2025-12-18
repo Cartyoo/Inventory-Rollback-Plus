@@ -3,9 +3,7 @@ package me.danjono.inventoryrollback.discord;
 import me.danjono.inventoryrollback.InventoryRollback;
 import me.danjono.inventoryrollback.config.ConfigData;
 import me.danjono.inventoryrollback.config.MessageData;
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.entity.Player;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -26,7 +24,8 @@ public class DiscordWebhook {
         HUNGER_RESTORED,
         EXPERIENCE_RESTORED,
         PLAYER_DEATH,
-        FORCE_BACKUP
+        FORCE_BACKUP,
+        ITEM_CLICKED_IN_RESTORE
     }
 
     /**
@@ -273,6 +272,74 @@ public class DiscordWebhook {
     }
 
     /**
+     * Sends a Discord webhook message for an item clicked in restore menu event
+     */
+    public static void sendItemClickedInRestore(String playerName, String adminName, String itemName, String menuType, String timestamp) {
+        if (!ConfigData.isDiscordEnabled() || !ConfigData.isDiscordItemClickedInRestore()) {
+            return;
+        }
+
+        // Log to console
+        InventoryRollback.getInstance().getLogger().info(
+            "Discord Webhook: " + adminName + " clicked " + itemName +
+            " in " + menuType + " restore menu for " + playerName
+        );
+
+        // Check what the getter methods return
+        String rawTitle = MessageData.getDiscordTitleItemClickedInRestore();
+        String rawDesc = MessageData.getDiscordDescItemClickedInRestore();
+        String rawMsg = MessageData.getDiscordMsgItemClickedInRestore();
+
+        InventoryRollback.getInstance().getLogger().warning("=== ITEM CLICK DEBUG ===");
+        InventoryRollback.getInstance().getLogger().warning("Raw Title: " + (rawTitle != null ? rawTitle : "NULL"));
+        InventoryRollback.getInstance().getLogger().warning("Raw Description: " + (rawDesc != null ? rawDesc : "NULL"));
+        InventoryRollback.getInstance().getLogger().warning("Raw Message: " + (rawMsg != null ? rawMsg : "NULL"));
+        InventoryRollback.getInstance().getLogger().warning("Use Embeds: " + ConfigData.isDiscordUseEmbeds());
+        InventoryRollback.getInstance().getLogger().warning("=======================");
+
+        String message, title, description;
+        if (ConfigData.isDiscordUseEmbeds()) {
+            title = rawTitle;
+
+            if (ConfigData.isDebugEnabled()) {
+                InventoryRollback.getInstance().getLogger().info("Using embeds - Title from MessageData: " + (title != null ? title : "NULL"));
+                InventoryRollback.getInstance().getLogger().info("Using embeds - Description from MessageData: " + (rawDesc != null ? rawDesc : "NULL"));
+            }
+
+            if (rawDesc != null) {
+                description = rawDesc
+                        .replace("%PLAYER%", playerName)
+                        .replace("%ADMIN%", adminName)
+                        .replace("%ITEM%", itemName)
+                        .replace("%MENU%", menuType)
+                        .replace("%TIME%", timestamp);
+            } else {
+                description = null;
+            }
+            message = null;
+        } else {
+            if (ConfigData.isDebugEnabled()) {
+                InventoryRollback.getInstance().getLogger().info("Not using embeds - Message from MessageData: " + (rawMsg != null ? rawMsg : "NULL"));
+            }
+
+            if (rawMsg != null) {
+                message = rawMsg
+                        .replace("%PLAYER%", playerName)
+                        .replace("%ADMIN%", adminName)
+                        .replace("%ITEM%", itemName)
+                        .replace("%MENU%", menuType)
+                        .replace("%TIME%", timestamp);
+            } else {
+                message = null;
+            }
+            title = null;
+            description = null;
+        }
+
+        sendWebhookMessage(EventType.ITEM_CLICKED_IN_RESTORE, message, title, description);
+    }
+
+    /**
      * Sends the actual webhook message to Discord
      */
     private static void sendWebhookMessage(EventType eventType, String message, String title, String description) {
@@ -310,6 +377,15 @@ public class DiscordWebhook {
      * Builds the JSON payload for the Discord webhook
      */
     private static String buildJsonPayload(EventType eventType, String message, String title, String description) {
+        // Debug logging
+        if (ConfigData.isDebugEnabled()) {
+            InventoryRollback.getInstance().getLogger().info("Building Discord payload - EventType: " + eventType);
+            InventoryRollback.getInstance().getLogger().info("  UseEmbeds: " + ConfigData.isDiscordUseEmbeds());
+            InventoryRollback.getInstance().getLogger().info("  Title: " + (title != null ? title : "NULL"));
+            InventoryRollback.getInstance().getLogger().info("  Description: " + (description != null ? description.substring(0, Math.min(50, description.length())) + "..." : "NULL"));
+            InventoryRollback.getInstance().getLogger().info("  Message: " + (message != null ? message.substring(0, Math.min(50, message.length())) + "..." : "NULL"));
+        }
+
         StringBuilder json = new StringBuilder();
         json.append("{");
 
@@ -318,10 +394,13 @@ public class DiscordWebhook {
             json.append("\"username\":\"").append(escapeJson(ConfigData.getDiscordServerName())).append("\",");
         }
 
-        if (ConfigData.isDiscordUseEmbeds() && title != null && description != null) {
+        if (ConfigData.isDiscordUseEmbeds() && description != null) {
             // Use embeds - Discord embeds support newlines differently
+            // Title is optional, description is required
             json.append("\"embeds\":[{");
-            json.append("\"title\":\"").append(escapeJson(title)).append("\",");
+            if (title != null && !title.isEmpty()) {
+                json.append("\"title\":\"").append(escapeJson(title)).append("\",");
+            }
             json.append("\"description\":\"").append(escapeJsonForEmbed(description)).append("\",");
             json.append("\"color\":").append(getColorForEventType(eventType)).append(",");
             json.append("\"timestamp\":\"").append(java.time.Instant.now().toString()).append("\"");
@@ -350,6 +429,7 @@ public class DiscordWebhook {
             case HEALTH_RESTORED:
             case HUNGER_RESTORED:
             case EXPERIENCE_RESTORED:
+            case ITEM_CLICKED_IN_RESTORE:
                 colorHex = ConfigData.getDiscordColorRestore();
                 break;
             case PLAYER_DEATH:

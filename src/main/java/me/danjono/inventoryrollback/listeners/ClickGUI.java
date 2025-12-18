@@ -556,6 +556,41 @@ public class ClickGUI implements Listener {
             } else if (isValidBackupMenuInteraction) {
                 if (staff.hasPermission("inventoryrollbackplus.restore")) {
                     e.setCancelled(false);
+
+                    // Log item click to Discord if item exists
+                    if (icon != null && icon.getType() != Material.AIR) {
+                        // Get player UUID from the back button in the menu
+                        ItemStack backButton = e.getInventory().getItem(46);
+                        if (backButton != null) {
+                            CustomDataItemEditor backButtonNbt = CustomDataItemEditor.editItem(backButton);
+                            if (backButtonNbt.hasUUID()) {
+                                OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(UUID.fromString(backButtonNbt.getString("uuid")));
+                                String itemName = icon.hasItemMeta() && icon.getItemMeta().hasDisplayName()
+                                    ? icon.getItemMeta().getDisplayName()
+                                    : icon.getType().name();
+
+                                try {
+                                    String timestamp = ConfigData.getTimeFormat().format(System.currentTimeMillis());
+                                    DiscordWebhook.sendItemClickedInRestore(
+                                        offlinePlayer.getName(),
+                                        staff.getName(),
+                                        itemName,
+                                        "Main Inventory",
+                                        timestamp
+                                    );
+                                } catch (Exception ex) {
+                                    InventoryRollback.getInstance().getLogger().warning("Failed to send Discord webhook for item click: " + ex.getMessage());
+                                    if (ConfigData.isDebugEnabled()) {
+                                        ex.printStackTrace();
+                                    }
+                                }
+                            } else if (ConfigData.isDebugEnabled()) {
+                                InventoryRollback.getInstance().getLogger().warning("Back button has no UUID - cannot log item click");
+                            }
+                        } else if (ConfigData.isDebugEnabled()) {
+                            InventoryRollback.getInstance().getLogger().warning("Back button is null - cannot log item click");
+                        }
+                    }
                 } else {
                     staff.sendMessage(MessageData.getPluginPrefix() + MessageData.getNoPermission());
                 }
@@ -729,6 +764,41 @@ public class ClickGUI implements Listener {
                     return;
                 }
                 e.setCancelled(false);
+
+                // Log item click to Discord if item exists
+                if (icon != null && icon.getType() != Material.AIR) {
+                    // Get player UUID from the back button in the menu
+                    ItemStack backButton = e.getInventory().getItem(46);
+                    if (backButton != null) {
+                        CustomDataItemEditor backButtonNbt = CustomDataItemEditor.editItem(backButton);
+                        if (backButtonNbt.hasUUID()) {
+                            OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(UUID.fromString(backButtonNbt.getString("uuid")));
+                            String itemName = icon.hasItemMeta() && icon.getItemMeta().hasDisplayName()
+                                ? icon.getItemMeta().getDisplayName()
+                                : icon.getType().name();
+
+                            try {
+                                String timestamp = ConfigData.getTimeFormat().format(System.currentTimeMillis());
+                                DiscordWebhook.sendItemClickedInRestore(
+                                    offlinePlayer.getName(),
+                                    staff.getName(),
+                                    itemName,
+                                    "Ender Chest",
+                                    timestamp
+                                );
+                            } catch (Exception ex) {
+                                InventoryRollback.getInstance().getLogger().warning("Failed to send Discord webhook for item click: " + ex.getMessage());
+                                if (ConfigData.isDebugEnabled()) {
+                                    ex.printStackTrace();
+                                }
+                            }
+                        } else if (ConfigData.isDebugEnabled()) {
+                            InventoryRollback.getInstance().getLogger().warning("Back button has no UUID - cannot log item click");
+                        }
+                    } else if (ConfigData.isDebugEnabled()) {
+                        InventoryRollback.getInstance().getLogger().warning("Back button is null - cannot log item click");
+                    }
+                }
             }
         }
     }

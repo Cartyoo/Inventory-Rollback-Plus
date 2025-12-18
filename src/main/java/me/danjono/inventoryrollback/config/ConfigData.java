@@ -112,6 +112,7 @@ public class ConfigData {
     private static boolean discordExperienceRestored;
     private static boolean discordPlayerDeath;
     private static boolean discordForceBackup;
+    private static boolean discordItemClickedInRestore;
     private static boolean discordIncludeServerName;
     private static String discordServerName;
     private static boolean discordUseEmbeds;
@@ -179,6 +180,7 @@ public class ConfigData {
         setDiscordExperienceRestored((boolean) getDefaultValue("discord.events.experience-restored", true));
         setDiscordPlayerDeath((boolean) getDefaultValue("discord.events.player-death", true));
         setDiscordForceBackup((boolean) getDefaultValue("discord.events.force-backup", true));
+        setDiscordItemClickedInRestore((boolean) getDefaultValue("discord.events.item-clicked-in-restore", false));
         setDiscordIncludeServerName((boolean) getDefaultValue("discord.settings.include-server-name", true));
         setDiscordServerName((String) getDefaultValue("discord.settings.server-name", "My Server"));
         setDiscordUseEmbeds((boolean) getDefaultValue("discord.settings.use-embeds", true));
@@ -359,6 +361,10 @@ public class ConfigData {
         discordForceBackup = enabled;
     }
 
+    public static void setDiscordItemClickedInRestore(boolean enabled) {
+        discordItemClickedInRestore = enabled;
+    }
+
     public static void setDiscordIncludeServerName(boolean enabled) {
         discordIncludeServerName = enabled;
     }
@@ -533,6 +539,10 @@ public class ConfigData {
 
     public static boolean isDiscordForceBackup() {
         return discordForceBackup;
+    }
+
+    public static boolean isDiscordItemClickedInRestore() {
+        return discordItemClickedInRestore;
     }
 
     public static boolean isDiscordIncludeServerName() {

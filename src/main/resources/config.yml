@@ -45,6 +45,7 @@ discord:
     experience-restored: true
     player-death: true
     force-backup: true
+    item-clicked-in-restore: false  # Logs when staff clicks items in restore menus (can be spammy)
   # Additional settings
   settings:
     # Include server name in Discord messages
